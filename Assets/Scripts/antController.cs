@@ -39,15 +39,20 @@ public class antController : MonoBehaviour
         // But instead we want to collide against everything except layer 8.
         layerMask = ~layerMask;
 
+        // Ray Position
+        Vector3 rayPos = transform.position;
+        Vector3 rayDir = transform.TransformDirection(Vector3.forward);
+        rayPos.y = rayPos.y + 0.5f ;
+
         RaycastHit hit;
+        
         // Does the ray intersect any objects excluding the player layer
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, castDistance, layerMask))
+        if (Physics.Raycast(rayPos, rayDir, out hit, castDistance, layerMask))
         {
             
-            //ebug.DrawLine(this.transform.position, hit.point);
             if (hit.distance < detectDistance)
             {
-                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.red);
+                Debug.DrawRay(rayPos, rayDir * hit.distance, Color.red);
 
                 if (checkTimer <= 0)
                 {
@@ -60,41 +65,41 @@ public class antController : MonoBehaviour
                     Vector3 newDir = transform.forward;
                     
                     //Check if left raycast hits
-                    if (Physics.Raycast(transform.position, left45, out lhit, castDistance, layerMask))
+                    if (Physics.Raycast(rayPos, left45, out lhit, castDistance, layerMask))
                     {
                         // Check if hit is near-distance
                         if (lhit.distance < detectDistance)
                         {
                             newDir = (newDir + transform.right * 5).normalized;
-                            Debug.DrawRay(transform.position, left45 * lhit.distance, Color.red);
+                            Debug.DrawRay(rayPos, left45 * lhit.distance, Color.red);
                         }
                         else
                         {
-                            Debug.DrawRay(transform.position, left45 * lhit.distance, Color.yellow);
+                            Debug.DrawRay(rayPos, left45 * lhit.distance, Color.yellow);
                         }
                         
                     }
                     else
                     {
-                        Debug.DrawRay(transform.position, left45 * castDistance, Color.white);
+                        Debug.DrawRay(rayPos, left45 * castDistance, Color.white);
 
                         // Check right
-                        if (Physics.Raycast(transform.position, right45, out rhit, castDistance, layerMask))
+                        if (Physics.Raycast(rayPos, right45, out rhit, castDistance, layerMask))
                         {
                             if (rhit.distance < detectDistance)
                             {
                                 newDir = (newDir - transform.right * 5).normalized;
-                                Debug.DrawRay(transform.position, right45 * rhit.distance, Color.red);
+                                Debug.DrawRay(rayPos, right45 * rhit.distance, Color.red);
                             }
                             else
                             {
-                                Debug.DrawRay(transform.position, right45 * rhit.distance, Color.yellow);
+                                Debug.DrawRay(rayPos, right45 * rhit.distance, Color.yellow);
                             }
 
                         }
                         else
                         {
-                            Debug.DrawRay(transform.position, right45 * castDistance, Color.white);
+                            Debug.DrawRay(rayPos, right45 * castDistance, Color.white);
                         }
                     }
 
@@ -116,16 +121,16 @@ public class antController : MonoBehaviour
             }
             else
             {
-                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
-                Vector3 xyDirection = Random.insideUnitCircle * wanderStrength;
+                Debug.DrawRay(rayPos, rayDir * hit.distance, Color.yellow);
 
+                // Pick random new direction
+                Vector3 xyDirection = Random.insideUnitCircle * wanderStrength;
                 setDesiredDirection(xyDirection, maxSpeed, steerStrength);
             }
         }
         else
         {
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 10, Color.white);
-            //Debug.DrawLine(transform.position, hit.point);
+            Debug.DrawRay(rayDir, rayPos * 10, Color.white);
 
             // Update Desired Direction
             Vector3 xyDirection = Random.insideUnitCircle * wanderStrength;

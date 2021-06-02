@@ -7,7 +7,7 @@ public class antHill : MonoBehaviour
     public GameObject antPrefab;
     //public GameObject parent;
     public int spawnCt;
-    public static int maxAnts = 50;
+    public static int maxAnts = 15;
     public int numAnts = 0;
     public float spawnRate;
     public static GameObject[] allAnts = new GameObject[maxAnts];
